@@ -1,0 +1,21 @@
+{
+  "name": "openai-moderation-discord-bot",
+  "module": "main.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --watch src/main.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.2",
+    "@types/bun": "1.2.21",
+    "discord.js": "^14.22.1",
+    "knub": "^31.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "openai": "5.16.0",
+    "zod": "4.1.5"
+  }
+}
