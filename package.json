@@ -3,13 +3,17 @@
   "module": "main.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run --watch src/main.ts"
+    "dev": "bun run --watch src/main.ts",
+    "lint": "biome check src",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
     "@types/bun": "1.2.21",
     "discord.js": "^14.22.1",
-    "knub": "^31.0.0"
+    "husky": "^9.1.7",
+    "knub": "^31.0.0",
+    "lint-staged": "^16.1.6"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -17,5 +21,8 @@
   "dependencies": {
     "openai": "5.16.0",
     "zod": "4.1.5"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": "biome check"
   }
 }
