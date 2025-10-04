@@ -38,7 +38,7 @@ export const strikeAction = defineAction({
 
     strikesMap.set(message.author.id, 0);
 
-    args.onMaxStrikes === "delete" && (await message.delete(), true);
-    args.onMaxStrikes === "ban" && (await message.guild?.members.ban(message.author.id), true);
+    args.onMaxStrikes === "delete" && (await message.delete());
+    args.onMaxStrikes === "ban" && (await message.guild?.members.ban(message.author.id));
   },
 });
