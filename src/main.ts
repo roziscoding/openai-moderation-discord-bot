@@ -1,6 +1,9 @@
 import process from "node:process";
 import { Client, GatewayIntentBits } from "discord.js";
 import { Knub } from "knub";
+import { repositories } from "./database/repositories";
+import { logFn, logger } from "./logger";
+import { configPlugin } from "./plugins/config/plugin";
 import { moderatorPlugin } from "./plugins/moderation/plugin";
 
 const client = new Client({
@@ -8,11 +11,20 @@ const client = new Client({
 });
 
 const knub = new Knub(client, {
-  guildPlugins: [moderatorPlugin],
+  guildPlugins: [moderatorPlugin, configPlugin],
+  options: {
+    logFn,
+    async getConfig(id) {
+      const config = await repositories.guild.getOrInitializeConfig(id);
+      return config ?? { plugins: { moderator: { a: "b" } } };
+    },
+  },
 });
 
-await Bun.serve({
-  port: 3000,
+knub.reloadGuild("1139748885871476786");
+
+const server = Bun.serve({
+  port: Number(Bun.env.PORT ?? "3000"),
   fetch: (req) => {
     const url = new URL(req.url);
     if (url.pathname === "/health") {
@@ -26,7 +38,7 @@ await Bun.serve({
   },
 });
 
-console.log(`Health check is running on port ${Bun.env.PORT}`);
+logger.info(`🏥 Health check is running on port ${server.port}`);
 
 knub.initialize();
 await client.login(Bun.env.DISCORD_BOT_TOKEN);
@@ -37,5 +49,26 @@ process.on("warning", (error) => {
     return;
   }
 
-  console.warn(error);
+  logger.warn(`⚠️ ${error}`);
 });
+
+// graceful shutdown
+const shutdown = async (signal: string) => {
+  logger.info(`👋 \nReceived ${signal}, shutting down gracefully...`);
+
+  try {
+    await client.destroy();
+    logger.info("✅ Discord client disconnected");
+
+    server.stop();
+    logger.info("🛑 HTTP server stopped");
+
+    process.exit(0);
+  } catch (error) {
+    logger.error({ error }, "❌ Error during shutdown");
+    process.exit(1);
+  }
+};
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));

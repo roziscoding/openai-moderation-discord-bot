@@ -1,5 +1,5 @@
 import type z from "zod";
-import type { ActionContext } from "./plugins/moderation/actions/action";
+import type { ActionContext } from "./plugins/moderation/action";
 
 export const applyPlaceholders = <TArgs extends z.ZodType | z.ZodNever = z.ZodNever>(
   context: ActionContext<TArgs>,
