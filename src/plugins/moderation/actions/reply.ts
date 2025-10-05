@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { applyPlaceholders } from "../../../utils";
-import { defineAction } from "./action";
+import { defineAction } from "../action";
 
 const replyActionArgumentsSchema = z.object({
   content: z.string(),

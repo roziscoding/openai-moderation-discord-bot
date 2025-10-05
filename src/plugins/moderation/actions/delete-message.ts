@@ -1,4 +1,4 @@
-import { defineAction } from "./action";
+import { defineAction } from "../action";
 
 export const deleteMessageAction = defineAction({
   name: "delete-message",
