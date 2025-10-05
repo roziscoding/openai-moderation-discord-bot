@@ -1,13 +1,9 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
     "declaration": false,
     "sourceMap": false,
     // Enable latest features
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
