@@ -126,6 +126,7 @@ const setCommand = guildPluginSlashCommand<ModeratorPlugin>()({
     }
 
     const fullConfig = structuredClone(context.pluginData.fullConfig);
+    fullConfig.plugins ??= {};
     fullConfig.plugins[pluginName] = { config: parsedConfig };
     await repositories.guild.setConfig(context.interaction.guildId, fullConfig);
     await context.pluginData.getKnubInstance().reloadGuild(context.interaction.guildId);
