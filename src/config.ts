@@ -5,6 +5,7 @@ export const AppConfig = z
   .object({
     DISCORD_BOT_TOKEN: z.string().min(1),
     OPENAI_API_KEY: z.string().min(1),
+    DATABASE_URL: z.string().min(1),
   })
   .transform((env) => ({
     discord: {
@@ -12,6 +13,9 @@ export const AppConfig = z
     },
     openai: {
       apiKey: env.OPENAI_API_KEY,
+    },
+    database: {
+      url: env.DATABASE_URL,
     },
   }));
 
