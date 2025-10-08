@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__better-auth__search",
+      "mcp__better-auth__chat"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
