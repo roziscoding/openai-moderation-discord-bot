@@ -6,7 +6,7 @@ import db, { info } from "../../database";
 
 export const healthcheckRoute = new Hono();
 
-healthcheckRoute.get("/healthcheck", async (c) => {
+healthcheckRoute.get("/", async (c) => {
   const status = {
     server: {
       status: "ok",

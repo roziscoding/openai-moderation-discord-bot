@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
-import { guilds } from "./guild";
-import { strikes } from "./strike";
+import { guilds } from "./guild.schema";
+import { strikes } from "./strike.schema";
 
 export const guildRelations = relations(guilds, ({ many }) => ({
   strikes: many(strikes),

@@ -10,9 +10,12 @@
     "db:migrate": "drizzle-kit migrate --config ./src/database/drizzle.config.ts",
     "db:update": "bun run db:generate && bun run db:migrate",
     "db:studio": "drizzle-kit studio --config ./src/database/drizzle.config.ts",
-    "drizzle": "drizzle-kit --config ./src/database/drizzle.config.ts"
+    "drizzle": "drizzle-kit --config ./src/database/drizzle.config.ts",
+    "auth": "bun x @better-auth/cli",
+    "auth:generate": "bun x @better-auth/cli generate --output ./src/database/schema/auth.schema.ts --config ./src/auth.ts -y"
   },
   "devDependencies": {
+    "@better-auth/cli": "1.3.27",
     "@biomejs/biome": "2.2.5",
     "@types/bun": "1.2.23",
     "@types/pg": "8.15.5",
@@ -27,6 +30,7 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
+    "better-auth": "^1.3.27",
     "drizzle-orm": "0.44.6",
     "hono": "4.9.10",
     "knub": "31.0.0",
