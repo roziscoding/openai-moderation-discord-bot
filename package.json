@@ -28,8 +28,9 @@
   },
   "dependencies": {
     "drizzle-orm": "0.44.6",
-    "humanize-ms": "2.0.0",
+    "hono": "4.9.10",
     "knub": "31.0.0",
+    "ms": "4.0.0-nightly.202508271359",
     "openai": "6.1.0",
     "pg": "8.16.3",
     "pino": "10.0.0",
