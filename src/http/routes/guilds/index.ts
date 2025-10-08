@@ -1,6 +1,6 @@
-import { Hono } from "hono";
-import { getByOwnerRoute } from "./get-by-owner.route";
+import { Hono } from 'hono'
+import { getByOwnerRoute } from './get-by-owner.route'
 
-export const guildsRoute = new Hono();
+export const guildsRoute = new Hono()
 
-guildsRoute.route("/", getByOwnerRoute);
+guildsRoute.route('/', getByOwnerRoute)

@@ -1,15 +1,15 @@
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { admin, organization } from "better-auth/plugins";
-import { appConfig } from "./config";
-import db from "./database";
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { admin, organization } from 'better-auth/plugins'
+import { appConfig } from './config'
+import db from './database'
 
-const { discord } = appConfig;
+const { discord } = appConfig
 
 export const auth = betterAuth({
-  basePath: "/auth",
+  basePath: '/auth',
   database: drizzleAdapter(db, {
-    provider: "pg",
+    provider: 'pg',
   }),
   socialProviders: {
     discord: {
@@ -18,5 +18,5 @@ export const auth = betterAuth({
     },
   },
   plugins: [organization(), admin()],
-  trustedOrigins: ["http://localhost:3001"],
-});
+  trustedOrigins: ['http://localhost:3001'],
+})

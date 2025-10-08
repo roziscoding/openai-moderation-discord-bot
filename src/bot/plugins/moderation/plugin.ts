@@ -1,38 +1,39 @@
-import { guildPlugin, guildPluginEventListener } from "knub";
-import OpenAI from "openai";
-import { repositories } from "../../../database/repositories";
-import { logger } from "../../../logger";
-import { ACTIONS } from "./actions";
-import { moderationCommand } from "./command";
-import { type ModeratorPlugin, PluginConfig } from "./types";
-import { runActions } from "./utils";
+import type { ModeratorPlugin } from './types'
+import { guildPlugin, guildPluginEventListener } from 'knub'
+import OpenAI from 'openai'
+import { repositories } from '../../../database/repositories'
+import { logger } from '../../../logger'
+import { ACTIONS } from './actions'
+import { moderationCommand } from './command'
+import { PluginConfig } from './types'
+import { runActions } from './utils'
 
-const openai = new OpenAI();
+const openai = new OpenAI()
 
 const onNewMessage = guildPluginEventListener<ModeratorPlugin>()({
-  event: "messageCreate",
+  event: 'messageCreate',
   listener: async (meta) => {
-    const config = await meta.pluginData.config.getForUser(meta.args.message.author);
+    const config = await meta.pluginData.config.getForUser(meta.args.message.author)
     logger.debug(
       { guildId: meta.args.message.guildId, messageId: meta.args.message.id },
-      "📝 New message. Moderating...",
-    );
+      '📝 New message. Moderating...',
+    )
 
     const moderationResult = await openai.moderations.create({
-      model: "omni-moderation-latest",
+      model: 'omni-moderation-latest',
       input: meta.args.message.content,
-    });
+    })
 
-    const { flagged, categories } = moderationResult.results[0];
+    const { flagged, categories } = moderationResult.results[0]
 
     if (!flagged) {
-      logger.debug({ guildId: meta.args.message.guildId, messageId: meta.args.message.id }, "✅ Not flagged.");
-      return;
+      logger.debug({ guildId: meta.args.message.guildId, messageId: meta.args.message.id }, '✅ Not flagged.')
+      return
     }
 
     const flaggedCategories = Object.entries(categories)
       .filter(([_, value]) => value)
-      .map(([key, _]) => key);
+      .map(([key, _]) => key)
 
     logger.info(
       {
@@ -46,29 +47,29 @@ const onNewMessage = guildPluginEventListener<ModeratorPlugin>()({
           username: meta.args.message.author.username,
         },
       },
-      "🚩 Message flagged.",
-    );
+      '🚩 Message flagged.',
+    )
 
     const categoryActions = flaggedCategories
-      .map((category) => config.actions[category as keyof typeof config.actions])
+      .map(category => config.actions[category as keyof typeof config.actions])
       .filter((actions): actions is NonNullable<typeof actions> => actions != null)
-      .flat();
+      .flat()
 
-    const context = { message: meta.args.message, flaggedCategories, repositories, config };
+    const context = { message: meta.args.message, flaggedCategories, repositories, config }
 
     if (categoryActions.length) {
-      await runActions(categoryActions, context, ACTIONS);
-      return;
+      await runActions(categoryActions, context, ACTIONS)
+      return
     }
 
-    await runActions(config.defaultActions, context, ACTIONS);
+    await runActions(config.defaultActions, context, ACTIONS)
   },
-});
+})
 
 export const moderatorPlugin = guildPlugin<ModeratorPlugin>()({
-  name: "moderator",
+  name: 'moderator',
   configParser: (input) => {
-    return PluginConfig.parse(input);
+    return PluginConfig.parse(input)
   },
   defaultConfig: {
     actions: {},
@@ -76,4 +77,4 @@ export const moderatorPlugin = guildPlugin<ModeratorPlugin>()({
   },
   events: [onNewMessage],
   slashCommands: [moderationCommand],
-});
+})

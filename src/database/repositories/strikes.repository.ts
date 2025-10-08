@@ -1,6 +1,6 @@
-import { and, count, eq, gt, ilike, inArray, isNull, lt, or } from "drizzle-orm";
-import type { Database } from "..";
-import { strikes } from "../schema";
+import type { Database } from '..'
+import { and, count, eq, gt, ilike, isNull, or } from 'drizzle-orm'
+import { strikes } from '../schema'
 
 export class StrikesRepository {
   constructor(private readonly db: Database) {}
@@ -10,6 +10,9 @@ export class StrikesRepository {
    * @param params - Parameters
    * @param params.userId User to get strikes for
    * @param params.guildId Guild to get strikes for
+   * @param params.includeDeleted Whether to include deleted strikes
+   * @param params.includeExpired Whether to include expired strikes
+   * @param params.reasons Reasons to filter strikes by
    * @returns All strikes for the user
    */
   async getForUser({
@@ -19,11 +22,11 @@ export class StrikesRepository {
     includeExpired = false,
     reasons,
   }: {
-    userId: string;
-    guildId: string;
-    includeDeleted?: boolean;
-    includeExpired?: boolean;
-    reasons?: string[];
+    userId: string
+    guildId: string
+    includeDeleted?: boolean
+    includeExpired?: boolean
+    reasons?: string[]
   }) {
     const userStrikes = await this.db.query.strikes.findMany({
       where: (strikes, { and, eq, gt }) =>
@@ -32,12 +35,12 @@ export class StrikesRepository {
           eq(strikes.guildId, guildId),
           includeExpired ? undefined : gt(strikes.expiresAt, new Date()),
           includeDeleted ? undefined : isNull(strikes.deletedAt),
-          reasons?.length ? or(...reasons.map((reason) => ilike(strikes.reason, `%${reason}%`))) : undefined,
+          reasons?.length ? or(...reasons.map(reason => ilike(strikes.reason, `%${reason}%`))) : undefined,
         ),
       orderBy: (strikes, { desc }) => [desc(strikes.createdAt)],
-    });
+    })
 
-    return userStrikes;
+    return userStrikes
   }
 
   async countForUser({
@@ -47,11 +50,11 @@ export class StrikesRepository {
     includeExpired = false,
     reasons,
   }: {
-    userId: string;
-    guildId: string;
-    includeDeleted?: boolean;
-    includeExpired?: boolean;
-    reasons?: string[];
+    userId: string
+    guildId: string
+    includeDeleted?: boolean
+    includeExpired?: boolean
+    reasons?: string[]
   }) {
     const query = this.db
       .select({ count: count() })
@@ -62,13 +65,11 @@ export class StrikesRepository {
           eq(strikes.guildId, guildId),
           includeDeleted ? undefined : isNull(strikes.deletedAt),
           includeExpired ? undefined : gt(strikes.expiresAt, new Date()),
-          reasons?.length ? or(...reasons.map((reason) => ilike(strikes.reason, `%${reason}%`))) : undefined,
+          reasons?.length ? or(...reasons.map(reason => ilike(strikes.reason, `%${reason}%`))) : undefined,
         ),
-      );
+      )
 
-    console.log(query.toSQL());
-
-    return query.then((result) => result[0]?.count ?? 0);
+    return query.then(result => result[0]?.count ?? 0)
   }
 
   /**
@@ -88,11 +89,11 @@ export class StrikesRepository {
     ttlInMs,
     strike,
   }: {
-    userId: string;
-    guildId: string;
-    reason: string;
-    ttlInMs: number;
-    strike: number;
+    userId: string
+    guildId: string
+    reason: string
+    ttlInMs: number
+    strike: number
   }) {
     await this.db.insert(strikes).values({
       strike,
@@ -100,9 +101,9 @@ export class StrikesRepository {
       guildId,
       reason,
       expiresAt: new Date(Date.now() + ttlInMs),
-    });
+    })
 
-    return await this.countForUser({ userId, guildId, reasons: reason.split(", ") });
+    return await this.countForUser({ userId, guildId, reasons: reason.split(', ') })
   }
 
   /**
@@ -112,10 +113,10 @@ export class StrikesRepository {
    * @param params.guildId Guild to clear strikes for
    * @returns The number of deleted strikes
    */
-  async clearUserStrikes({ userId, guildId }: { userId: string; guildId: string }) {
+  async clearUserStrikes({ userId, guildId }: { userId: string, guildId: string }) {
     return await this.db
       .update(strikes)
       .set({ deletedAt: new Date() })
-      .where(and(eq(strikes.userId, userId), eq(strikes.guildId, guildId)));
+      .where(and(eq(strikes.userId, userId), eq(strikes.guildId, guildId)))
   }
 }
