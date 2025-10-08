@@ -1,4 +1,4 @@
-import type { PluginConfig } from "./src/plugins/moderation/types";
+import type { PluginConfig } from "./src/bot/plugins/moderation/types";
 
 const config: PluginConfig = {
   actions: {
