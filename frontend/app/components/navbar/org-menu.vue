@@ -2,14 +2,11 @@
 import { useAuth } from '../../composables/auth'
 
 const {
+  otherOrgs,
   activeOrganization,
-  orgs,
+  hasOtherOrgs,
   setActiveOrganization,
 } = useAuth()
-
-const otherOrgs = computed(() => {
-  return orgs.value.data?.filter(org => org.id !== activeOrganization.value.data?.id) ?? []
-})
 </script>
 
 <template>
@@ -28,7 +25,7 @@ const otherOrgs = computed(() => {
           <span class="text-lg">{{ activeOrganization.data?.name ?? 'Select Organization' }}</span>
         </div>
       </div>
-      <ul class="dropdown-content menu bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow" tabindex="0">
+      <ul v-if="hasOtherOrgs" class="dropdown-content menu bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow" tabindex="0">
         <li v-for="org in otherOrgs" :key="org.id">
           <div class="flex items-center" @click="setActiveOrganization(org.id)">
             <div class="avatar w-10">
