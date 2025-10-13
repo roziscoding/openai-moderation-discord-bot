@@ -3,7 +3,12 @@ import { defineAction } from '../action'
 import { applyPlaceholders } from '../utils'
 
 const replyActionArgumentsSchema = z.object({
-  content: z.string(),
+  content: z.string().meta({
+    title: 'Content',
+    description: 'The content to reply with',
+    placeholder: 'Olá {author}, sua mensagem foi flagada como {flaggedCategories}',
+    availablePlaceholders: ['author', 'flaggedCategories', 'guild', 'channel', 'authorMention'],
+  }),
 })
 
 export const replyAction = defineAction({

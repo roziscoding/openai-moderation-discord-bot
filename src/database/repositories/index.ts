@@ -1,8 +1,8 @@
 import db from '..'
-import { GuildRepository } from './guild.repository'
+import { OrganizationRepository } from './organization.repository'
 import { StrikesRepository } from './strikes.repository'
 
 export const repositories = {
-  guild: new GuildRepository(db),
+  organization: new OrganizationRepository(db),
   strikes: new StrikesRepository(db),
 }

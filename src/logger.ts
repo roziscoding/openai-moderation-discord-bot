@@ -10,8 +10,8 @@ const pinoPrettyTransport = {
 }
 
 export const logger = pino({
-  level: Bun.env.LOG_LEVEL ?? 'info',
-  transport: Bun.env.ENVIRONMENT === 'development' ? pinoPrettyTransport : undefined,
+  level: typeof Bun !== 'undefined' ? Bun.env.LOG_LEVEL ?? 'info' : 'info',
+  transport: typeof Bun !== 'undefined' ? Bun.env.ENVIRONMENT === 'development' ? pinoPrettyTransport : undefined : undefined,
 })
 
 export function logFn(level: string, ...args: any[]) {

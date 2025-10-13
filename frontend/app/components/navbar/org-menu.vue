@@ -12,7 +12,7 @@ const {
 <template>
   <div>
     <div class="dropdown">
-      <div class="btn btn-ghost p-2" tabindex="0">
+      <div class="cursor-pointer p-2 flex flex-row items-center gap-4 hover:bg-base-300 rounded-box" tabindex="0">
         <div class="flex items-center gap-2">
           <div class="avatar w-10">
             <div class="rounded-full">

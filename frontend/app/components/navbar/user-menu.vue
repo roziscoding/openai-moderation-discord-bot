@@ -8,8 +8,8 @@ const {
 </script>
 
 <template>
-  <div class="dropdown dropdown-end">
-    <div tabindex="0" role="button" class="btn btn-ghost">
+  <div class="dropdown dropdown-end cursor-pointer">
+    <div tabindex="0" role="button" class="cursor-pointer px-2 flex flex-row items-center gap-4 hover:bg-base-300 rounded-box">
       {{ session.data?.user.name }}
       <div class="avatar">
         <div class="w-10 rounded-full">

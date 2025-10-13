@@ -24,12 +24,37 @@ export const OnMaxStrikesAction = z.discriminatedUnion('action', [
 ])
 
 const strikeActionArgumentsSchema = z.object({
-  maxStrikes: z.number(),
-  strikeMessage: z.string(),
-  maxStrikesMessage: z.string(),
-  onMaxStrikes: z.array(OnMaxStrikesAction),
-  perReason: z.boolean().optional().default(false),
-  ttl: z.string().transform(val => val as StringValue),
+  maxStrikes: z.number().meta({
+    title: 'Max Strikes',
+    description: 'The maximum number of strikes before action is taken',
+    placeholder: 3,
+  }),
+  strikeMessage: z.string().meta({
+    title: 'Strike Message',
+    description: 'The message to send to the user when they are struck',
+    placeholder: '{currentStrike} out of {maxStrikes}',
+    availablePlaceholders: ['currentStrike', 'maxStrikes', 'author', 'guild', 'channel', 'authorMention', 'flaggedCategories'],
+  }),
+  maxStrikesMessage: z.string().meta({
+    title: 'Max Strikes Message',
+    description: 'The message to send to the user when they reach the maximum number of strikes',
+    placeholder: 'Your message has been flagged as {flaggedCategories}',
+    availablePlaceholders: ['flaggedCategories', 'author', 'guild', 'channel', 'authorMention'],
+  }),
+  onMaxStrikes: z.array(OnMaxStrikesAction).meta({
+    title: 'On Max Strikes',
+    description: 'The actions to take when the user reaches the maximum number of strikes',
+    placeholder: '{reply}, {report}, {delete}',
+  }),
+  perReason: z.boolean().optional().default(false).meta({
+    title: 'Per Reason',
+    description: 'Whether to count strikes per reason or not',
+  }),
+  ttl: z.string().meta({
+    title: 'Strike Duration',
+    description: 'The time to live for the strike',
+    placeholder: '30d',
+  }),
 })
 
 export const strikeAction = defineAction({
@@ -53,7 +78,6 @@ export const strikeAction = defineAction({
       .then(count => count + 1)
 
     const placeholders = {
-      strike: strikes.toString(),
       currentStrike: strikes.toString(),
       maxStrikes: args.maxStrikes.toString(),
     }
@@ -68,7 +92,7 @@ export const strikeAction = defineAction({
       userId: message.author.id,
       guildId: message.guildId,
       reason: context.flaggedCategories.join(', '),
-      ttlInMs: ms(args.ttl),
+      ttlInMs: ms(args.ttl as StringValue),
       strike: strikes,
     })
 

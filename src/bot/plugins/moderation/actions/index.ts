@@ -19,7 +19,6 @@ export const ModerationAction = z.discriminatedUnion('action', [
     action: z.literal('reply'),
     arguments: replyAction.arguments,
   }),
-
   z.object({
     action: z.literal('report'),
     arguments: reportAction.arguments,

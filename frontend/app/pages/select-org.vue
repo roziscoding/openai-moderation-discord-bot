@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useRedirect } from '~/composables/redirect'
 import { useAuth } from '../composables/auth'
 
 definePageMeta({
   layout: false,
 })
+
+const { redirect } = useRedirect('/dashboard')
 
 const {
   activeOrganization,
@@ -13,13 +16,13 @@ const {
 
 onMounted(() => {
   if (activeOrganization.value.data) {
-    navigateTo('/')
+    navigateTo(redirect.value)
   }
 })
 
-function selectOrg(orgId: string) {
-  setActiveOrganization(orgId)
-  navigateTo('/')
+async function selectOrg(orgId: string) {
+  await setActiveOrganization(orgId)
+  navigateTo(redirect.value)
 }
 </script>
 

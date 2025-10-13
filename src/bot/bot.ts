@@ -16,8 +16,8 @@ const knub = new Knub(client, {
   options: {
     logFn,
     async getConfig(id) {
-      const config = await repositories.guild.findById(id)
-      return config?.config ?? {}
+      const config = await repositories.organization.findBySlug(id)
+      return (config?.metadata && JSON.parse(config.metadata)?.config) ?? {}
     },
   },
 })

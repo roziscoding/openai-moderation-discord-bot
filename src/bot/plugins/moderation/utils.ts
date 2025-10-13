@@ -25,6 +25,7 @@ export function applyPlaceholders<TArgs extends z.ZodType | z.ZodNever = z.ZodNe
     guild: context.message.guild?.name ?? 'Unknown Guild',
     channel: context.message.channel.name,
     authorMention: `<@${context.message.author.id}>`,
+    flaggedCategories: context.flaggedCategories.join(', '),
     ...placeholders,
   }
 

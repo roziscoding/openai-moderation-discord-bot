@@ -39,7 +39,7 @@ const setAdminRoleCommand = guildPluginSlashCommand<ModeratorPlugin>()({
       return
     }
 
-    await repositories.guild.setConfig(context.interaction.guildId, {
+    await repositories.organization.setConfig(context.interaction.guildId, {
       ...context.pluginData.fullConfig,
       plugins: {
         ...context.pluginData.fullConfig.plugins,

@@ -3,7 +3,12 @@ import { defineAction } from '../action'
 import { applyPlaceholders } from '../utils'
 
 const reportActionArgumentsSchema = z.object({
-  reportMessage: z.string(),
+  reportMessage: z.string().meta({
+    title: 'Report Message',
+    description: 'The message to send to the server admins',
+    placeholder: '{adminMention}, mensagem de {author} flagada como {flaggedCategories}',
+    availablePlaceholders: ['adminMention', 'author', 'flaggedCategories', 'guild', 'channel', 'authorMention'],
+  }),
 })
 
 export const reportAction = defineAction({
@@ -11,7 +16,7 @@ export const reportAction = defineAction({
   description: 'Report the message to server admins',
   arguments: reportActionArgumentsSchema,
   execute: async (context) => {
-    const { message, args, flaggedCategories, config } = context
+    const { message, args, config } = context
     const adminRole = message.guild?.roles.cache.get(config.adminRoleId)
     if (!adminRole) {
       return
@@ -19,7 +24,6 @@ export const reportAction = defineAction({
 
     await message.reply(
       applyPlaceholders(context, args.reportMessage, {
-        flaggedCategories: flaggedCategories.join(', '),
         adminMention: adminRole.toString(),
       }),
     )

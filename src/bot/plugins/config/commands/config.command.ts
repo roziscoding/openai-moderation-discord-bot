@@ -129,7 +129,7 @@ const setCommand = guildPluginSlashCommand<ModeratorPlugin>()({
     const fullConfig = structuredClone(context.pluginData.fullConfig)
     fullConfig.plugins ??= {}
     fullConfig.plugins[pluginName] = { config: parsedConfig }
-    await repositories.guild.setConfig(context.interaction.guildId, fullConfig)
+    await repositories.organization.setConfig(context.interaction.guildId, fullConfig)
     await context.pluginData.getKnubInstance().reloadGuild(context.interaction.guildId)
     await context.interaction.reply({
       content: 'Config set and reloaded',

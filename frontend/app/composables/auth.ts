@@ -12,20 +12,24 @@ export function useAuth() {
   const session = authClient.useSession()
   const isSignedIn = computed(() => Boolean(session.value.data?.user))
   const activeOrganization = authClient.useActiveOrganization()
+  const organizationMetadata = computed(() => {
+    return JSON.parse(activeOrganization.value.data?.metadata ?? '{}')
+  })
 
-  function signIn() {
-    authClient.signIn.social({
+  async function signIn(redirect = '/select-org') {
+    await authClient.signIn.social({
       provider: 'discord',
-      callbackURL: `${window.location.origin}/select-org`,
+      callbackURL: `${window.location.origin}${redirect}`,
     })
   }
 
-  function signOut() {
-    authClient.signOut()
+  async function signOut() {
+    await authClient.signOut()
+    navigateTo('/login')
   }
 
-  function setActiveOrganization(orgId: string) {
-    authClient.organization.setActive({ organizationId: orgId })
+  async function setActiveOrganization(orgId: string) {
+    await authClient.organization.setActive({ organizationId: orgId })
   }
 
   const otherOrgs = computed(() => {
@@ -45,6 +49,7 @@ export function useAuth() {
     session,
     isSignedIn,
     activeOrganization,
+    organizationMetadata,
     otherOrgs,
     hasOrgs,
     hasOtherOrgs,
